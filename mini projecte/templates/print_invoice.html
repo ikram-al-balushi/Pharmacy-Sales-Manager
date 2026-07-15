@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Invoice {{ sale[1] }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; }
+        .invoice-details { margin: 20px 0; }
+        .items-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .items-table th, .items-table td { border: 1px solid #000; padding: 8px; text-align: left; }
+        .total { text-align: right; font-weight: bold; font-size: 18px; }
+        @media print { .no-print { display: none; } }
+    </style>
+</head>
+<body>
+    <div class="no-print">
+        <button onclick="window.print()" class="btn btn-primary">Print Invoice</button>
+        <button onclick="window.close()" class="btn btn-secondary">Close</button>
+    </div>
+    
+    <div class="header">
+        <h1>SALES INVOICE</h1>
+        <h2>{{ sale[1] }}</h2>
+    </div>
+    
+    <div class="invoice-details">
+        <p><strong>Customer:</strong> {{ sale[2] or 'Walk-in Customer' }}</p>
+        <p><strong>Date:</strong> {{ sale[6] }}</p>
+        <p><strong>Payment Type:</strong> {{ sale[5] }}</p>
+    </div>
+    
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.product_name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.price }}</td>
+                <td>${{ item.total }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div class="total">
+        <p>Grand Total: ${{ sale[4] }}</p>
+    </div>
+    
+    <div style="margin-top: 50px; text-align: center;">
+        <p>Thank you for your business!</p>
+    </div>
+</body>
+</html>

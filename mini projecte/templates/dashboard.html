@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 id="totalRevenue">$0</h4>
+                        <p>Total Revenue</p>
+                    </div>
+                    <i class="fas fa-dollar-sign fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 id="totalSales">0</h4>
+                        <p>Total Sales</p>
+                    </div>
+                    <i class="fas fa-shopping-cart fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 id="totalStock">0</h4>
+                        <p>Stock Items</p>
+                    </div>
+                    <i class="fas fa-boxes fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 id="totalExpenses">$0</h4>
+                        <p>Total Expenses</p>
+                    </div>
+                    <i class="fas fa-receipt fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <a href="/stock" class="btn btn-primary me-2 mb-2">Manage Stock</a>
+                <a href="/sales" class="btn btn-success me-2 mb-2">New Sale</a>
+                <a href="/expenses" class="btn btn-warning me-2 mb-2">Add Expense</a>
+                <a href="/analytics" class="btn btn-info me-2 mb-2">View Analytics</a>
+                <a href="/ledger" class="btn btn-secondary mb-2">View Ledger</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>AI Assistant</h5>
+            </div>
+            <div class="card-body">
+                <div id="chatMessages" style="height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin-bottom: 10px;"></div>
+                <div class="input-group">
+                    <input type="text" id="chatInput" class="form-control" placeholder="Ask about your business...">
+                    <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function loadDashboardData() {
+    fetch('/analytics')
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            // Extract data from analytics page (simplified approach)
+        });
+}
+
+function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const messages = document.getElementById('chatMessages');
+    
+    if (input.value.trim()) {
+        messages.innerHTML += `<div class="mb-2"><strong>You:</strong> ${input.value}</div>`;
+        
+        fetch('/ai_chat', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({query: input.value})
+        })
+        .then(response => response.json())
+        .then(data => {
+            messages.innerHTML += `<div class="mb-2 alert alert-info py-1"><strong>AI:</strong> ${data.response}</div>`;
+            messages.scrollTop = messages.scrollTop + 1000;
+        })
+        .catch(error => {
+            messages.innerHTML += `<div class="mb-2 alert alert-danger py-1"><strong>Error:</strong> Could not get response</div>`;
+        });
+        
+        input.value = '';
+    }
+}
+
+document.getElementById('chatInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') sendMessage();
+});
+
+loadDashboardData();
+</script>
+{% endblock %}

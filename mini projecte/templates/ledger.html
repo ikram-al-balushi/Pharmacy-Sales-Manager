@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">Ledger - Credit Management</h2>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card bg-warning text-white">
+            <div class="card-body text-center">
+                <h4>
+                    ${% set customer_total = 0 %}
+                    {% for credit in credits %}
+                        {% if credit[1] == 'customer' %}
+                            {% set customer_total = customer_total + credit[3] %}
+                        {% endif %}
+                    {% endfor %}
+                    {{ customer_total }}
+                </h4>
+                <p>Customer Credits (Receivable)</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card bg-info text-white">
+            <div class="card-body text-center">
+                <h4>
+                    ${% set supplier_total = 0 %}
+                    {% for credit in credits %}
+                        {% if credit[1] == 'supplier' %}
+                            {% set supplier_total = supplier_total + credit[3] %}
+                        {% endif %}
+                    {% endfor %}
+                    {{ supplier_total }}
+                </h4>
+                <p>Supplier Credits (Payable)</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Customer Credits</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Customer</th>
+                                <th>Amount</th>
+                                <th>Description</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for credit in credits %}
+                                {% if credit[1] == 'customer' %}
+                                <tr>
+                                    <td>{{ credit[2] }}</td>
+                                    <td>${{ credit[3] }}</td>
+                                    <td>{{ credit[4] }}</td>
+                                    <td>{{ credit[5] }}</td>
+                                </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Supplier Credits</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Supplier</th>
+                                <th>Amount</th>
+                                <th>Description</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for credit in credits %}
+                                {% if credit[1] == 'supplier' %}
+                                <tr>
+                                    <td>{{ credit[2] }}</td>
+                                    <td>${{ credit[3] }}</td>
+                                    <td>{{ credit[4] }}</td>
+                                    <td>{{ credit[5] }}</td>
+                                </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Net Credit Position</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Money to Receive:</strong> ${{ customer_total }}
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Money to Pay:</strong> ${{ supplier_total }}
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Net Position:</strong> 
+                        <span class="{% if (customer_total - supplier_total) >= 0 %}text-success{% else %}text-danger{% endif %}">
+                            ${{ customer_total - supplier_total }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profit & Loss Graph</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>📈 Monthly Profit & Loss</h2>
+        <canvas id="profitChart"></canvas>
+        <br>
+        <a href="{{ url_for('home') }}">⬅ Back to Dashboard</a>
+    </div>
+
+    <script>
+        // Backend se safely JSON load
+        const monthly_profit = {{ monthly_profit_json | safe }};
+        const labels = Object.keys(monthly_profit);
+        const values = Object.values(monthly_profit);
+
+        const ctx = document.getElementById('profitChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Profit / Loss',
+                    data: values,
+                    borderColor: 'green',
+                    backgroundColor: 'rgba(0, 255, 0, 0.2)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            }
+        });
+    </script>
+</body>
+</html>

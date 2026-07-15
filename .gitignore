@@ -1,0 +1,28 @@
+# Sensitive files
+service_account.json
+*.env
+
+# Database files
+*.db
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE
+.vscode/
+
+# Backups
+backups/
+
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# PDF test files
+test.pdf
+
+# PyWhatKit
+PyWhatKit_DB.txt
